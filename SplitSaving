@@ -1,0 +1,782 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Fees Calculator | James Cook University Brisbane
+		</title>
+<meta name="description" content='A list of fees for diploma, undergraduate and postgraduate programs available at the Brisbane campus.'>
+<meta name="keywords" content='James Cook University Brisbane, tuition, fees, postgradaute, undergraduate, diploma, English'>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="robots" content="index, follow" />
+<link rel="stylesheet" type="text/css" href="reset.css" />
+<link rel="stylesheet" type="text/css" href="jcub2011-print.css" media="print" />
+<!--[if lte IE 9]>
+<link rel="stylesheet" type="text/css" href="/css/jcub2011-stylesie.css" />
+<![endif]-->
+<link href="media/jcub.ico" rel="shortcut icon" type="image/x-icon" />
+<link rel="apple-touch-icon" href="media/jcubrisbane-icon-57.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="media/jcubrisbane-icon-72.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="media/jcubrisbane-icon-144.png" />
+<link rel="stylesheet" type="text/css" href="jcub2011-styles.css" />
+<script type="text/javascript" src="scripts/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.tools.min.js"></script>
+<script type="text/javascript" src="scripts/tabs-hacked.js"></script>
+<script type="text/javascript" src="scripts/jquery.validate.js"></script>
+<script type="text/javascript" src="scripts/jquery.expander.js"></script>
+<script type="text/javascript" src="scripts/jquery.jswipe-0.1.2.js"></script>
+<script type="text/javascript" src="scripts/jcub2011-extras.js"></script>
+<script type="text/javascript" src="scripts/jquery.fader.js"></script>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-8798819-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#calculator li a").click(function() {
+			$("#calculator li a").removeClass("selected");
+			$("#calculator div").removeClass("showCal");
+			$(this).addClass("selected");
+			$("#" + $(this).attr("name")).addClass("showCal");
+		});
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	
+		$.ajax({
+			type: "GET",
+			url: "domestic.xml",
+			dataType: "xml",
+			success: getDomestic 
+		});
+		
+		//Type Student Selected
+		$("#typeDDL").change(function() {
+		
+			var value = $("select#typeDDL option:selected").text();
+			if (value == "Domestic Student") {
+			
+				$("#courseDDL").empty();
+				$.ajax({
+					type: "GET",
+					url: "domestic.xml",
+					dataType: "xml",
+					success: getDomestic 
+				});
+			
+			}
+			if (value == "International Student") {
+			
+				$("#courseDDL").empty();
+				$.ajax({
+					type: "GET",
+					url: "international.xml",
+					dataType: "xml",
+					success: getInternational
+				});
+			
+			}
+			$("#spDDL").attr('selectedIndex', 0);
+		
+		});
+		
+		//Course Selected
+		$("#courseDDL").change(function() {
+		
+			getFPS();
+		
+		});
+		
+		//Study Period Selected
+		$("#spDDL").change(function() {
+			
+			getFPS();
+			getDate();
+		
+		});
+		
+		//Number of Subject Selected
+		$("#nosDDL").change(function() {
+		
+			getFTBP();
+		
+		});
+		
+		//Amount Saved Entered
+		$("#ASaved").keyup(function() {
+		
+			getTSR();
+		
+		});
+		
+		//Saving Type Selected
+		$("select#pType").change(function() {
+		
+			getSRP();
+		
+		});
+		
+	/*	//Due Date Changed
+		$("#duedate").change(function() {
+		
+			getSRP();
+		
+		});*/
+		
+		//Load Date
+		getDate();
+		
+	});
+	
+	function getSRP() {
+	
+	//	var curdate = $("#curdate").val();
+		var duedate = $("#dueDate").val();
+		var stype = $("select#pType").val();
+		var nod = $("#durationPeriod").val();
+	//	var duration = new Date(Date.parse(duedate)-Date.parse(curdate));
+	/*	if (duration < 0) {
+			alert("Time Duration is invalid");
+		}
+		if (stype == "week") {
+			var nod = duration/1000/60/60/24/7;
+			$("span#pType").text("Week");
+			var period = Math.floor(nod);
+			var asave = $("#TFP").text()-$("#ASaved").val();
+			
+			if (nod < 1) {
+				alert("You have less than a week to do the saving!");
+				$("#SRP").text(asave.toFixed(2));
+			} else {
+				$("#SRP").text((asave/period).toFixed(2));
+			}
+			
+			$("#nop").text(period);
+			$("#sType").text($("span#pType").text()+"(s)");
+		} else if (stype == "fornight") {
+			var nod = duration/1000/60/60/24/7/2;
+			$("span#pType").text("Fortnight");
+			var period = Math.floor(nod);
+			
+		var asave = $("#TFP").text()-$("#ASaved").val();
+		$("#SRP").text((asave/period).toFixed(2));
+		$("#nop").text(period);
+		$("#sType").text($("span#pType").text()+"(s)");
+		} else if (stype == "month") {
+			var nod = duration/1000/60/60/24/30;
+			$("span#pType").text("Month");
+			var period = Math.floor(nod);
+			
+		var asave = $("#TFP").text()-$("#ASaved").val();
+		$("#SRP").text((asave/period).toFixed(2));
+		$("#nop").text(period);
+		$("#sType").text($("span#pType").text()+"(s)");
+		}*/
+		if (nod < 7) {
+		//	var duration = nod/7;
+			$("span#pType").text("Week");
+		//	var period = Math.floor(duration);
+		//	var asave = $("#TFP").text()-$("#ASaved").val();
+			var tsr = $("#TSR").val();
+			alert("You have less than a week to do the saving!");
+			$("#SRP").text(formatNumber(tsr));
+			
+			$("#nop").text(nod+" Day(s)");
+		//	$("#sType").text($("span#pType").text()+"(s)");
+		} else if (stype == "week" & nod >= 7) {
+			var duration = nod/7;
+			$("span#pType").text("Week");
+			var period = Math.floor(duration);
+		//	var asave = $("#TFP").text()-$("#ASaved").val();
+			var tsr = $("#TSR").val();
+			
+			if (period < 1) {
+				alert("You have less than a week to do the saving!");
+				$("#SRP").text(formatNumber(tsr.toFixed(2)));
+			} else {
+				$("#SRP").text(formatNumber((tsr/period).toFixed(2)));
+			}
+			
+			var leftover = nod-(period*7);
+			
+			if (leftover == 0) {
+				$("#nop").text(period+" Week(s)");
+			} else {
+				$("#nop").text(period+" Week(s) and "+leftover+" Day(s)");
+			}
+		//	$("#sType").text($("span#pType").text()+"(s)");
+		} else if (stype == "fornight") {
+			var duration = nod/14;
+			$("span#pType").text("Fortnight");
+			var period = Math.floor(duration);
+		//	var asave = $("#TFP").text()-$("#ASaved").val();
+			var tsr = $("#TSR").val();
+			
+			if (period < 1) {
+				alert("You have less than a fornight to do the saving!");
+				$("#SRP").text(formatNumber(tsr));
+			} else {
+				$("#SRP").text(formatNumber((tsr/period).toFixed(2)));
+			}
+			
+			var leftover = nod-(period*14);
+			
+			if (leftover == 0) {
+				$("#nop").text(period+" Fortnight(s)");
+			} else {
+				$("#nop").text(period+" Fortnight(s) and "+leftover+" Day(s)");
+			}
+		//	$("#sType").text($("span#pType").text()+"(s)");
+		} else if (stype == "month") {
+			var duration = nod/31;
+			$("span#pType").text("Month");
+			var period = Math.floor(duration);
+		//	var asave = $("#TFP").text()-$("#ASaved").val();
+			var tsr = $("#TSR").val();
+			
+			if (period < 1) {
+				alert("You have less than a month to do the saving!");
+				$("#SRP").text(formatNumber(tsr));
+			} else {
+				$("#SRP").text(formatNumber((tsr/period).toFixed(2)));
+			}
+			
+			var leftover = nod-(period*31);
+			
+			if (leftover == 0) {
+				$("#nop").text(period+" Month(s)");
+			} else {
+				$("#nop").text(period+" Month(s) and "+leftover+" Days");
+			}
+		//	$("#sType").text($("span#pType").text()+"(s)");
+		}
+	
+	}
+	
+	function getTSR() {
+	
+		var amount = $("#ASaved").val();
+		if (isNaN(amount)) {
+			alert("Please enter Numberic value only");
+			$("#ASaved").val("");
+		}
+		var tfp = $("#TFP").val();
+		var asave = tfp-amount;
+		$("#TSR").text(formatNumber(asave.toFixed(2)));
+		$("#TSR").val(asave.toFixed(2));
+		if (asave <= 0) {
+			alert("You have enough saving for the payment");
+		}
+		getSRP();
+	
+	}
+	
+	function getDate() {
+		
+		var d = new Date();
+		var yyyy = d.getFullYear();
+		var mm = d.getMonth()+1;
+		if (mm < 10) { mm = "0"+mm; }
+		var dd = d.getDate();
+		if (dd < 10) { dd = "0"+dd; }
+		var todate = yyyy + "-" + mm + "-" + dd;
+	//	alert(todate);
+	//	$("#curdate").val(todate);
+	
+		var sp = $("#spDDL :selected").text();
+		if (sp == "SP22 July 2015") {
+			$("#startDate").text("20 July 2015");
+			$("#dueDate").text("03 August 2015");
+			$("#endDate").text("23 October 2015");
+			$("#dueDate").val("2015/08/03");
+		} else if (sp == "SP23 November 2015") {
+			$("#startDate").text("16 November 2015");
+			$("#dueDate").text("01 December 2015");
+			$("#endDate").text("26 February 2016");
+			$("#dueDate").val("2015-12-01");	
+		} else if (sp == "SP21 March 2016") {
+			$("#startDate").text("21 March 2016");
+			$("#dueDate").text("04 April 2016");
+			$("#endDate").text("24 June 2016");
+			$("#dueDate").val("2016-04-04");	
+		} else if (sp == "SP22 July 2016") {
+			$("#startDate").text("18 July 2016");
+			$("#dueDate").text("02 August 2016");
+			$("#endDate").text("14 October 2016");
+			$("#dueDate").val("2016-08-02");	
+		} else if (sp == "SP23 November 2016") {
+			$("#startDate").text("21 November 2016");
+			$("#dueDate").text("05 December 2016");
+			$("#endDate").text("03 March 2016");
+			$("#dueDate").val("2016-12-05");	
+		}
+		
+		var duedate = $("#dueDate").val();
+	//	duedate = "2015/06/07";
+		var duration = new Date(Date.parse(duedate)-Date.parse(todate));
+		var nod = Math.floor(duration/1000/60/60/24);
+		$("#durationPeriod").text(nod+" days");
+		$("#durationPeriod").val(nod);
+	//	alert($("#durationPeriod").val());
+	
+	}
+	
+	function getFTBP() {
+	
+		var nos = $("#nosDDL :selected").text();
+		var fps = $("#FPS").val();
+		var ftbp = nos*fps;
+		$("#FTBP").text(formatNumber(ftbp.toFixed(2)));
+		$("#FTBP").val(ftbp.toFixed(2));
+		var ssa = nos*42.90;
+		$("#SSA").text(formatNumber(ssa.toFixed(2)));
+		$("#SSA").val(ssa.toFixed(2));
+		var tfp = ftbp+ssa;
+		$("#TFP").text(formatNumber(tfp.toFixed(2)));
+		$("#TFP").val(tfp.toFixed(2));
+		getTSR();
+	
+	}
+	
+	function getFPS(xml) {
+	
+		var type = $("#typeDDL :selected").text();
+		var xmlF, spTag;
+		if (type == "Domestic Student") {
+			xmlF = "domestic.xml";
+		} else if (type == "International Student") {
+			xmlF = "international.xml";
+		}
+		
+		var course = $("#courseDDL :selected").text();
+		var sp = $("#spDDL option:selected").val();
+		
+		$("#selCourse").text(course);
+		$("#studyPeriod").text($("#spDDL option:selected").text());
+		
+		$.ajax({
+			type: "GET",
+			url: xmlF,
+			dataType: "xml",
+			success: function(xml) {
+			
+				if (sp == 2015) {
+					spTag = "fee15"
+				} else if (sp == 2016) {
+					spTag = "fee16"
+				}
+				
+				$(xml).find("course").each(function() {
+				
+					if ($(this).find("program").text() == course) {
+					
+						$("#FPS").text(formatNumber($(this).find(spTag).text()));
+						$("#FPS").val($(this).find(spTag).text());
+						getFTBP();
+					
+					}
+				
+				});
+			
+			} 
+		});
+	
+	}
+	
+	function getDomestic(xml) {
+								
+		$("#courseDDL").append('<option id="postgraduate" disabled>- Postgraduate -</option>');
+		$("#courseDDL").append('<option id="jmaster" disabled>- Joint Master -</option>');
+	
+		$(xml).find("course").each(function() {
+			
+			if ($(this).find("type").text() == "Postgraduate") {
+			
+				$("#courseDDL option#postgraduate").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			} else if ($(this).find("type").text() == "Joint Master") {
+			
+				$("#courseDDL option#jmaster").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			}
+		
+		});
+			
+		$("#courseDDL").attr('selectedIndex', 1);
+		$("#studentType").text("Domestic Student");
+		getFPS();
+	
+	}
+	
+	function getInternational(xml) {
+	
+		$("#courseDDL").append('<option id="diploma" disabled>- Diploma -</option>');
+		$("#courseDDL").append('<option id="undergraduate" disabled>- Undergraduate -</option>');
+		$("#courseDDL").append('<option id="postgraduate" disabled>- Postgraduate -</option>');
+		$("#courseDDL").append('<option id="jmaster" disabled>- Joint Master -</option>');
+	
+		$(xml).find("course").each(function() {
+			
+			if ($(this).find("type").text() == "Postgraduate") {
+			
+				$("#courseDDL option#postgraduate").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			} else if ($(this).find("type").text() == "Joint Master") {
+			
+				$("#courseDDL option#jmaster").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			} else if ($(this).find("type").text() == "Diploma") {
+			
+				$("#courseDDL option#diploma").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			} else if ($(this).find("type").text() == "Undergraduate") {
+			
+				$("#courseDDL option#undergraduate").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			}
+		
+		});
+			
+		$("#courseDDL").attr('selectedIndex', 1);
+		$("#studentType").text("International Student");
+		getFPS();
+	
+	}
+	
+	function formatNumber(num) {
+		return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+	}
+	
+	
+</script>
+<!--script type="text/javascript">
+	$(document).ready(function() {
+			
+		$.ajax({
+			type: "GET",
+			url: "domestic.xml",
+			dataType: "xml",
+			success: function(xml) {
+				
+				$("#courseDDL").append('<option>- Select One -</option>');
+				$(xml).find("course").each(function() {
+				$("#courseDDL").append('<option>'+$(this).find("program").text()+'</option>');
+				
+				});
+			},
+			error: function(xhr, ajaxOption, thrownError) {
+			
+				alert(xhr.status);
+			
+			}
+		});
+	});
+	
+	function xmlRun(xml) {
+	
+		$("#courseDDL").append('<option>- Select One -</option>');
+	
+	}
+	
+	/*	$(xml).find("course").each(function() {
+			$("#courseDDL").append('<option>- Select One -</option>'+
+									'<option disabled>- '+ $(this).find("type").text() +' -</option>'+
+									'<option>' +$(this).find("program").text() +'</option>'+
+									'<option disabled>- Undergraduate -</option>');
+		});
+	}*/
+	
+</script-->
+<!--script type="text/javascript">
+	if (window.XMLHttpRequest) {
+		// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	} else {
+		// code for IE6, IE5
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.open("GET","domestic.xml",false);
+	xmlhttp.send();
+	var xmlDoc = xmlhttp.responseXML;
+	window.alert("work");
+	var root = xmlDoc.documentElement;
+	window.alert("work");
+	//var value1 = data[0].getElementsByTagName("program")[0].childNodes[0].nodeValue;
+	//window.alert(value1);
+</script-->
+</head>
+
+<body class="courses "></body>
+	<div id="container" class="fixedwidthcentered">
+	
+  
+    <div id="header" class="fixedwidthcentered">
+	<img id="logo-print" src="media/logo-jcub-print.png" alt="JCUB Print Logo" />
+        <a href="/" title="Home" id="logo"><img src="media/logo-jcub.png" alt="James Cook University Brisbane" /></a>
+	<ul id="logintabs"><li class="e-students"><a href="/students/student-portal.aspx" title="Students">Students</a></li><li class="staff"><a href="/staff-login.aspx" title="Staff">Staff</a></li><li class="agents"><a href="/agents.aspx" title="Agents">Agents</a></li></ul>
+    </div>
+ 
+    <div id="hnav" class="newnav clearfix fixedwidthcentered">
+	<ul class="fixedwidthcentered clearfix"><li class="navitem"><a href="/students.aspx">Students</a><span class="pipe">|</span><ul class="dropdown shdw"><li class="child"><a href="/students/student-services.aspx">Student Services</a><span class="pipe">|</span></li><li class="child"><a href="/students/general-services.aspx">General Services</a><span class="pipe">|</span></li><li class="child"><a href="/students/subject-information.aspx">Subject Information</a><span class="pipe">|</span></li><li class="child"><a href="/students/important-dates.aspx">Important Dates</a><span class="pipe">|</span></li><li class="child"><a href="/students/new-students.aspx">New Students</a><span class="pipe">|</span></li><li class="child"><a href="/students/graduation-and-alumni.aspx">Graduation and Alumni</a><span class="pipe">|</span></li><li class="child"><a href="/students/testimonials.aspx">Testimonials</a><span class="pipe">|</span></li><li class="child"><a href="/students/video-testimonials.aspx">Video Testimonials</a><span class="pipe">|</span></li></ul></li><li class="navitem"><a href="/courses.aspx">Courses</a><span class="pipe">|</span><ul class="dropdown shdw"><li class="child"><a href="/courses/undergraduate.aspx">Undergraduate</a><span class="pipe">|</span></li><li class="child"><a href="/courses/postgraduate.aspx">Postgraduate</a><span class="pipe">|</span></li><li class="child"><a href="/courses/work-integrated-learning.aspx">Work-Integrated Learning</a><span class="pipe">|</span></li><li class="child"><a href="/courses/internships.aspx">Internships</a><span class="pipe">|</span></li><li class="child"><a href="/courses/entry-requirements.aspx">Entry Requirements</a><span class="pipe">|</span></li><li class="child"><a href="/courses/pathways.aspx">Pathways</a><span class="pipe">|</span></li><li class="child"><a href="/courses/fees.aspx">Fees</a><span class="pipe">|</span></li><li class="child"><a href="/courses/how-to-apply.aspx">How To Apply</a><span class="pipe">|</span></li><li class="child"><a href="/courses/mba-(weekend-based-program).aspx">MBA (Weekend Based Program)</a></li></ul></li><li class="navitem"><a href="/employers.aspx">Employers</a><span class="pipe">|</span><ul class="dropdown shdw"><li class="child"><a href="/employers/employment-service.aspx">Employment Service</a><span class="pipe">|</span></li><li class="child"><a href="/employers/host-an-intern.aspx">Host An Intern</a><span class="pipe">|</span></li><li class="child"><a href="/employers/corporate-training.aspx">Corporate Training</a></li></ul></li><li class="navitem"><a href="/careers.aspx">Careers</a><span class="pipe">|</span><ul class="dropdown shdw"><li class="child"><a href="/careers/students.aspx">Students</a><span class="pipe">|</span></li><li class="child"><a href="/careers/employers.aspx">Employers</a><span class="pipe">|</span></li><li class="child"><a href="http://joblinx.com.au" target="_blank">Joblinx</a></li></ul></li><li class="navitem"><a href="/news-events.aspx">News &amp; Events</a><span class="pipe">|</span><ul class="dropdown shdw"><li class="child"><a href="/news-events/news.aspx">News</a><span class="pipe">|</span></li><li class="child"><a href="/news-events/events.aspx">Events</a></li></ul></li><li class="navitem"><a href="/about-us.aspx">About Us</a><span class="pipe">|</span><ul class="dropdown shdw"><li class="child"><a href="/about-us/vc's-welcome.aspx">VC's Welcome</a><span class="pipe">|</span></li><li class="child"><a href="/about-us/brisbane-campus.aspx">Brisbane Campus</a><span class="pipe">|</span></li><li class="child"><a href="/about-us/our-staff-.aspx">Our Staff </a><span class="pipe">|</span></li><li class="child"><a href="/about-us/our-locations.aspx">Our Locations</a><span class="pipe">|</span></li><li class="child"><a href="/about-us/image-gallery.aspx">Image Gallery</a><span class="pipe">|</span></li><li class="child"><a href="/about-us/publications.aspx">Publications</a><span class="pipe">|</span></li><li class="child"><a href="/about-us/faqs.aspx">FAQs</a><span class="pipe">|</span></li><li class="child"><a href="/about-us/contact-us.aspx">Contact Us</a></li></ul></li><li class="navitem" id="htgtj-search"><div id="htgtj-search-wrapper"><form action="/search.aspx" name="coursesearch-form" id="coursesearch-form" method="post"><input type="text" name="search" id="coursesearch-field" value="Search..." onfocus="document.forms['coursesearch-form'].search.value='';" onblur="if (document.forms['coursesearch-form'].search.value == '') document.forms['coursesearch-form'].search.value='Search...';" /><input type="submit" name="coursesearch-submit" id="coursesearch-submit" value="Go" /></form></div></li></ul>
+    </div>
+    
+    <div id="jcub2011-wrapper">
+	
+
+<div id="content" class="fixedwidthcentered written" style="background-image:url(media/feeTitle.jpg);" >
+	<div id="category-navigation" style="background-image:url();">
+  <h2><a href="/courses.aspx">Courses</a></h2>
+  <ul class="Level1">
+    <li><a href="/courses/undergraduate.aspx">Undergraduate</a></li>
+    <li><a href="/courses/postgraduate.aspx">Postgraduate</a></li>
+    <li><a href="/courses/work-integrated-learning.aspx">Work-Integrated Learning</a></li>
+    <li><a href="/courses/internships.aspx">Internships</a></li>
+    <li><a href="/courses/entry-requirements.aspx">Entry Requirements</a></li>
+    <li><a href="/courses/pathways.aspx">Pathways</a></li>
+    <li class="active1"><a href="/courses/fees.aspx">Fees</a></li>
+    <ul class="Level2">
+      <li class="child-nav-item"><a href="/courses/fees/domestic-fees.aspx">Domestic Fees</a></li>
+      <li class="child-nav-item"><a href="/courses/fees/scholarships--bursaries.aspx">Scholarships &amp; Bursaries</a></li>
+      <li class="child-nav-item"><a href="/courses/fees/student-services-and-amenities-fee.aspx">Student Services and Amenities Fee</a></li>
+      <li class="child-nav-item active2"><a href="#">Fees Calculator</a></li>
+    </ul>
+    <li><a href="/courses/how-to-apply.aspx">How To Apply</a></li>
+    <li><a href="/courses/mba-(weekend-based-program).aspx">MBA (Weekend Based Program)</a></li>
+  </ul>
+</div>
+	<div id="copy" class="tester">
+		<a class="print-page" href="#" onclick="window.print();return false">Print this page</a>
+		<div id="umbBreadCrumb"><a href="/james-cook-university-brisbane-2011.aspx">Welcome to James Cook University Brisbane</a>
+		&gt;
+        <a href="/courses.aspx">Courses </a>
+		&gt;
+        <a href="/courses/fees.aspx">Fees</a> > Fees Calculator</div>
+		
+	<!----------------------Start of Fee Calculator Content----------------------------------------------------------------------------------------->
+		<div id="calculator">
+			<ul>
+				<li><a href="javascript:void(0);" name="GFCal" title="General Fee Calculator">GENERAL FEE</a></li>
+				<li><a href="javascript:void(0);" name="SSCal" title="Split Saving Calculator" class="selected">SPLIT SAVING</a></li>
+				<li><a href="javascript:void(0);" name="IECal" title="Income-Expense Calculator">INCOME & EXPENSE</a></li>
+			</ul>
+			<div id="GFCal">
+				General Fee Calculator
+			</div>
+			<div id="SSCal" class="showCal" align="center">
+				<table id="SSCal" style="border:0px solid black;" width="650">
+					<tr>
+						<td width="250">Type of Student
+						</td>
+						<td colspan="2">
+							<select id="typeDDL">
+								<option>Domestic Student</option>
+								<option>International Student</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Course
+						</td>
+						<td colspan="2">
+							<select id="courseDDL" style="width:370px; height:20px;">
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Study Period
+						</td>
+						<td colspan="2">
+							<select id="spDDL">
+								<option value="2015">SP22 July 2015</option>
+								<option value="2015">SP23 November 2015</option>
+								<option value="2016">SP21 March 2016</option>
+								<option value="2016">SP22 July 2016</option>
+								<option value="2016">SP23 November 2016</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Number of Subjects
+						</td>
+						<td colspan="2">
+							<select id="nosDDL">
+								<option>1</option>
+								<option>2</option>
+								<option selected>3</option>
+								<option>4</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Amount Saved
+						</td>
+						<td colspan="2">$ <input type="text" id="ASaved" style="width:100px;" maxlength="5" value=""></input>
+						</td>
+					</tr>
+					<tr>
+						<td>Saving Mode
+						</td>
+						<td>
+							<select id="pType">
+								<option value="week">Weekly</option>
+								<option value="fornight">Fortnightly</option>
+								<option value="month">Monthly</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<div id="resultDisplay" style="border:1px solid orange; width:620px; height:auto; display:block; margin:0px;">
+								<table style="border:0px solid black;" width="580px">
+									<tr>
+										<td align="center" colspan="3">
+											<span id="studentType" style="font-weight:bold;"></span>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3">
+											<span id="selCourse" style="font-weight:bold;"></span>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3" style="font-size:1.0em;">
+											Study Period of <span id="studyPeriod" style="font-weight:bold;"></span>
+											<table width="350px" style=" margin-left:100px; font-size:77%;"><tr width="70%"><td>
+											Trimester Starts</td><td>
+											<span id="startDate"></span>
+											</td></tr><tr><td>
+											Payment Due Date</td><td>
+											<span id="dueDate" style="font-weight:bold;"></span>
+											</td></tr><tr><td>
+											Trimester Ends</td><td>
+											<span id="endDate"></span>
+											</td></tr></table>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3" style="font-size:1.0em;">
+											You have approximately <span id="durationPeriod" style="font-weight:bold;"></span> to do your saving.
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<table style="font-size:60%; border:0px solid black;" width="540px">
+												<tr>
+													<td width="300px">Fee per Subject
+													</td>
+													<td align="right">$</td>
+													<td align="right" width="100px"><span id="FPS"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Fee to be Paid
+													</td>
+													<td align="right">$</td>
+													<td align="right"><span id="FTBP"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Student Service & Amenities Fee (SSA)
+													</td>
+													<td align="right">$</td>
+													<td align="right"><span id="SSA"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Total Fee Payable
+													</td>
+													<td align="right">$</td>
+													<td align="right"><span id="TFP"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Total Saving Required
+													</td>
+													<td align="right">$</td>
+													<td align="right"><span id="TSR"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Saving Required per <span id="pType"></span>
+													</td>
+													<td align="right">$</td>
+													<td align="right"><span id="SRP" style="margin:0px 0px 0px 0px; display:inline-block; width:70px;"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Duration of Saving
+													</td>
+													<td align="right" colspan="2">
+														<span id="nop"></span>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+						</td>
+						<td colspan="2">
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="IECal">
+				Income & Expense Calculator
+			</div>
+		</div>		
+	<!---------------------------------------------------------------------------------------------------------------------------------------------->
+		<div style="height:100px;"></div>
+		<div class="clearfix top">
+			<a href="#container">Top of page</a>
+		</div>
+		<div id="social"><div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#appId=137058209645668&amp;xfbml=1"></script><fb:like href="" send="true" width="450" show_faces="false" font="lucida grande"></fb:like></div>
+		<div id="subcontent">
+		</div>
+        </div>
+	<div id="feature">
+		<div id="why-choose"><span class="header">Why Choose JCU Brisbane?</span><ul>
+    <li class="reason" id="why-choose2"><a href="/about-us/brisbane-campus.aspx#Trimester" style="background-image:url(media/icn-whychoose1.jpg)" title="3 Start Dates A Year - March, July &amp; November">3 Start Dates A Year - March, July &amp; November</a></li>
+    <li class="reason" id="why-choose3"><a href="/courses/internships.aspx" style="background-image:url(media/icn-whychoose2.jpg)" title="Professional Internships">Professional Internships</a></li>
+    <li class="reason" id="why-choose4"><a href="/employers.aspx" style="background-image:url(media/icn-whychoose3.jpg)" title="Free Employment Services">Free Employment Services</a></li>
+    <li class="reason" id="why-choose5"><a href="/students/student-services/student-resource-centre.aspx" style="background-image:url(media/icn-whychoose4.jpg)" title="Student Resource Centre">Student Resource Centre</a></li>
+  </ul><a href="http://www.jcub.edu.au/courses/how-to-apply/application-forms.aspx" class="apply-now" title="Apply Now!">Apply Now!</a></div>
+	</div>
+</div>
+
+
+    </div>
+
+    <div id="fat-footer"><ul class="fixedwidthcentered nolist"><li class="col" id="col1"><ul><li class="ffhead"><a href="/students.aspx" title="Students">Students</a></li><li class="ffitem"><p><a href="/courses/how-to-apply/application-forms.aspx" title="Application Forms">Applications</a>, <a href="/students/new-students.aspx" title="New Students">New Students</a>, <a href="/students/subject-information.aspx" title="Subject Info">Subjects</a>, <a href="/students/general-services.aspx" title="Services">Services</a>, <a href="/students/student-portal.aspx" title="Student Portal">Student Portal</a>, <a href="http://www-public.jcu.edu.au/libcomp/computing/email/index.htm">JCU Webmail</a>, <a href="http://www.jcub.edu.au/students/general-services/library-resources.aspx">Library</a></p></li><li class="ffhead"><a href="/courses.aspx" title="Courses">Courses</a></li><li class="ffitem"><p><a href="/courses/fees.aspx" title="Fees">Fees</a>, <a href="/courses/undergraduate.aspx" title="Undergraduate">Undergraduate</a>, <a href="/courses/postgraduate.aspx" title="Postgraduate">Postgraduate</a>, <a href="/courses/work-integrated-learning.aspx" title="Work-Integrated Learning">WIL</a>, <a href="/courses/internships.aspx" title="Internships">Internships</a></p></li><li class="ffhead"><a href="/careers.aspx" title="Careers">Careers</a></li><li class="ffitem"><p><a href="/careers/students.aspx" title="Students">Students</a>, <a href="/careers/employers.aspx" title="Employers">Employers</a>, <a href="/careers/joblinx.aspx" title="Joblinx">Joblinx</a></p></li></ul></li><li class="col" id="col2"><ul><li class="ffhead"><a href="/news-events.aspx" title="News &amp; Events">News &amp; Events</a></li><li class="ffitem"><p><a href="/news-events/news.aspx" title="News">Latest News</a>, <a href="/news-events/events.aspx" title="Events">Events</a>, <a href="/students/testimonials.aspx" title="Testimonials">Testimonials</a></p></li><li class="ffhead"><a href="/about-us.aspx" title="About">About</a></li><li class="ffitem"><p><a href="/about-us/brisbane-campus.aspx" title="Brisbane Campus">Campus</a>, <a href="" title="Publications">Publications</a>, <a href="/about-us/our-staff-.aspx" title="Our Staff ">Staff</a>, <a href="/about-us/contact-us.aspx" title="Contact Us">Contact</a></p></li><li class="ffhead"><a href="/students/student-portal.aspx" title="Login">Login</a></li><li class="ffitem"><p><a href="/students/student-portal.aspx" title="Student Portal">Student</a>, <a href="/staff-login.aspx" title="Staff Login">Staff</a>, <a href="/agents.aspx" title="Agents">Agent</a></p></li></ul></li><li class="col nomarr" id="col3"><ul><li class="ffhead"><a href="/about-us/our-locations.aspx" title="Where We Are Located">Where We Are Located</a></li><li class="ffitem"><div class="col1">349 Queen Street<br>Brisbane QLD 4000<br>Australia<br><a href="/locations-brisbane.aspx" id="view-map" title="View Map" rel="#overlay">View Map</a></div>
+<div class="col2">Tel: +61 7 3001 7800<br />Fax: +61 7 3001 7899</div></li><li class="ffitem footer-logos"><a href="http://www.iru.edu.au/" class="footer-logo first" target="_blank" title="Innovative Research Technologies"><img src="media/icn-innovativeresearchuniversities.png" alt="Innovative Research Technologies" /></a><a href="http://studyinaustralia.gov.au/Sia/Splash2.aspx" class="footer-logo second" target="_blank" title="Study In Australia"><img src="media/logo-australiafutureunlimited-half.png" alt="Study In Australia" /></a></li></ul></li></ul></div><div id="footer"><ul class="fixedwidthcentered nolist"><li class="link last"><a href="/privacy.aspx" title="Privacy">Privacy</a></li><li class="link"><a href="/disclaimer.aspx" title="Disclaimer">Disclaimer</a><span class="pipe">|</span></li><li class="link"><a href="/sitemap.aspx" title="Site Map">Site Map</a><span class="pipe">|</span></li><li class="first">CRICOS Provider Code: 00117J<span class="pipe">|</span></li><li>ABN: 46253211955<span class="pipe">|</span></li><li>Copyright © 2011 James Cook University Brisbane (Operated by Russo Higher Education).</li></ul></div>
+      
+  </div>
+
+<!-- overlayed element -->
+<div class="apple_overlay" id="overlay">
+
+	<!-- the external content is loaded inside this tag -->
+	<div class="contentWrap"></div>
+
+</div>
+
+</body>
+</html>
+
