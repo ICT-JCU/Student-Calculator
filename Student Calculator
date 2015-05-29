@@ -185,22 +185,83 @@
 		$("#nop").text(period);
 		$("#sType").text($("span#pType").text()+"(s)");
 		}*/
-		if (stype == "week") {
+		if (nod < 7) {
+		//	var duration = nod/7;
+			$("span#pType").text("Week");
+		//	var period = Math.floor(duration);
+		//	var asave = $("#TFP").text()-$("#ASaved").val();
+			var tsr = $("#TSR").val();
+			alert("You have less than a week to do the saving!");
+			$("#SRP").text(formatNumber(tsr));
+			
+			$("#nop").text(nod+" Day(s)");
+		//	$("#sType").text($("span#pType").text()+"(s)");
+		} else if (stype == "week" & nod >= 7) {
 			var duration = nod/7;
 			$("span#pType").text("Week");
 			var period = Math.floor(duration);
 		//	var asave = $("#TFP").text()-$("#ASaved").val();
 			var tsr = $("#TSR").val();
 			
-			if (nod < 1) {
+			if (period < 1) {
 				alert("You have less than a week to do the saving!");
-				$("#SRP").text(tsr.toFixed(2));
+				$("#SRP").text(formatNumber(tsr.toFixed(2)));
 			} else {
-				$("#SRP").text((tsr/period).toFixed(2));
+				$("#SRP").text(formatNumber((tsr/period).toFixed(2)));
 			}
 			
-			$("#nop").text(period);
-			$("#sType").text($("span#pType").text()+"(s)");
+			var leftover = nod-(period*7);
+			
+			if (leftover == 0) {
+				$("#nop").text(period+" Week(s)");
+			} else {
+				$("#nop").text(period+" Week(s) and "+leftover+" Day(s)");
+			}
+		//	$("#sType").text($("span#pType").text()+"(s)");
+		} else if (stype == "fornight") {
+			var duration = nod/14;
+			$("span#pType").text("Fortnight");
+			var period = Math.floor(duration);
+		//	var asave = $("#TFP").text()-$("#ASaved").val();
+			var tsr = $("#TSR").val();
+			
+			if (period < 1) {
+				alert("You have less than a fornight to do the saving!");
+				$("#SRP").text(formatNumber(tsr));
+			} else {
+				$("#SRP").text(formatNumber((tsr/period).toFixed(2)));
+			}
+			
+			var leftover = nod-(period*14);
+			
+			if (leftover == 0) {
+				$("#nop").text(period+" Fortnight(s)");
+			} else {
+				$("#nop").text(period+" Fortnight(s) and "+leftover+" Day(s)");
+			}
+		//	$("#sType").text($("span#pType").text()+"(s)");
+		} else if (stype == "month") {
+			var duration = nod/31;
+			$("span#pType").text("Month");
+			var period = Math.floor(duration);
+		//	var asave = $("#TFP").text()-$("#ASaved").val();
+			var tsr = $("#TSR").val();
+			
+			if (period < 1) {
+				alert("You have less than a month to do the saving!");
+				$("#SRP").text(formatNumber(tsr));
+			} else {
+				$("#SRP").text(formatNumber((tsr/period).toFixed(2)));
+			}
+			
+			var leftover = nod-(period*31);
+			
+			if (leftover == 0) {
+				$("#nop").text(period+" Month(s)");
+			} else {
+				$("#nop").text(period+" Month(s) and "+leftover+" Days");
+			}
+		//	$("#sType").text($("span#pType").text()+"(s)");
 		}
 	
 	}
@@ -264,6 +325,7 @@
 		}
 		
 		var duedate = $("#dueDate").val();
+	//	duedate = "2015/06/07";
 		var duration = new Date(Date.parse(duedate)-Date.parse(todate));
 		var nod = Math.floor(duration/1000/60/60/24);
 		$("#durationPeriod").text(nod+" days");
@@ -577,7 +639,7 @@
 					</tr>
 					<tr>
 						<td colspan="3">
-							<div id="resultDisplay" style="border:1px solid red; width:620px; height:600px; display:block; margin:0px;">
+							<div id="resultDisplay" style="border:1px solid orange; width:620px; height:auto; display:block; margin:0px;">
 								<table style="border:0px solid black;" width="580px">
 									<tr>
 										<td align="center" colspan="3">
@@ -613,10 +675,10 @@
 										<td>
 											<table style="font-size:60%; border:0px solid black;" width="540px">
 												<tr>
-													<td>Fee per Subject
+													<td width="300px">Fee per Subject
 													</td>
 													<td align="right">$</td>
-													<td align="right"><span id="FPS"></span>
+													<td align="right" width="100px"><span id="FPS"></span>
 													</td>
 												</tr>
 												<tr>
@@ -655,26 +717,13 @@
 													</td>
 												</tr>
 												<tr>
-													<td>
+													<td>Duration of Saving
 													</td>
-													<td>
-														<span  style="margin:0px 0px 0px 30px; display:inline-block; width:50px;">For </span>
-														<span id="nop" style="display:inline-block; width:30px;"></span>
-														<span id="sType" style="display:inline-block; width:90px;"></span>
+													<td align="right" colspan="2">
+														<span id="nop"></span>
 													</td>
 												</tr>
 											</table>
-										</td>
-									<tr>
-										<td>
-										</td>
-									</tr>
-									<tr>
-										<td>
-										</td>
-									</tr>
-									<tr>
-										<td>
 										</td>
 									</tr>
 								</table>
