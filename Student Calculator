@@ -218,7 +218,7 @@
 				$("#nop").text(period+" Week(s) and "+leftover+" Day(s)");
 			}
 		//	$("#sType").text($("span#pType").text()+"(s)");
-		} else if (stype == "fornight") {
+		} else if (stype == "fortnight") {
 			var duration = nod/14;
 			$("span#pType").text("Fortnight");
 			var period = Math.floor(duration);
@@ -226,7 +226,7 @@
 			var tsr = $("#TSR").val();
 			
 			if (period < 1) {
-				alert("You have less than a fornight to do the saving!");
+				alert("You have less than a fortnight to do the saving!");
 				$("#SRP").text(formatNumber(tsr));
 			} else {
 				$("#SRP").text(formatNumber((tsr/period).toFixed(2)));
@@ -272,6 +272,7 @@
 		if (isNaN(amount)) {
 			alert("Please enter Numberic value only");
 			$("#ASaved").val("");
+			amount = 0;
 		}
 		var tfp = $("#TFP").val();
 		var asave = tfp-amount;
@@ -462,6 +463,365 @@
 	
 	
 </script>
+<!--JavaScript for Income Expense Calculator-->
+<script type="text/javascript">
+	$(document).ready(function() {
+	
+		$("#txtWage").keyup(function() {
+			getBalance();
+		});
+		$("#txtSupport").keyup(function() {
+			getBalance();
+		});
+		$("#txtScho").keyup(function() {
+			getBalance();
+		});
+		$("#txtIOther").keyup(function() {
+			getBalance();
+		});
+		$("#txtAcc").keyup(function() {
+			getBalance();
+		});
+		$("#txtGro").keyup(function() {
+			getBalance();
+		});
+		$("#txtTran").keyup(function() {
+			getBalance();
+		});
+		$("#txtEOther").keyup(function() {
+			getBalance();
+		});
+		$("#WageMode").change(function() {
+			getBalance();
+		});
+		$("#SupportMode").change(function() {
+			getBalance();
+		});
+		$("#SchoMode").change(function() {
+			getBalance();
+		});
+		$("#IOtherMode").change(function() {
+			getBalance();
+		});
+		$("#AccMode").change(function() {
+			getBalance();
+		});
+		$("#GroMode").change(function() {
+			getBalance();
+		});
+		$("#TranMode").change(function() {
+			getBalance();
+		});
+		$("#EOtherMode").change(function() {
+			getBalance();
+		});
+	
+	});
+	
+	function getBalance() {
+	
+		var wage = +$("#txtWage").val();
+		var support = +$("#txtSupport").val();
+		var scho = +$("#txtScho").val();
+		var iother = +$("#txtIOther").val();
+		var acc = +$("#txtAcc").val();
+		var gro = +$("#txtGro").val();
+		var tran = +$("#txtTran").val();
+		var eother = +$("#txtEOther").val();
+		var wageMode = $("#WageMode").val();
+		var supportMode = $("#SupportMode").val();
+		var schoMode = $("#SchoMode").val();
+		var iotherMode = $("#IOtherMode").val();
+		var accMode = $("#AccMode").val();
+		var groMode = $("#GroMode").val();
+		var tranMode = $("#TranMode").val();
+		var eotherMode = $("#EOtherMode").val();
+		
+		if (isNaN(wage)) {
+			alert("Please enter Numberic value only");
+			$("#txtWage").val("");
+			wage = 0;
+		}
+		if (isNaN(support)) {
+			alert("Please enter Numberic value only");
+			$("#txtSupport").val("");
+			support = 0;
+		}
+		if (isNaN(scho)) {
+			alert("Please enter Numberic value only");
+			$("#txtScho").val("");
+			scho = 0;
+		}
+		if (isNaN(iother)) {
+			alert("Please enter Numberic value only");
+			$("#txtIOther").val("");
+			iother = 0;
+		}
+		if (isNaN(acc)) {
+			alert("Please enter Numberic value only");
+			$("#txtAcc").val("");
+			acc = 0;
+		}
+		if (isNaN(gro)) {
+			alert("Please enter Numberic value only");
+			$("#txtGro").val("");
+			gro = 0;
+		}
+		if (isNaN(tran)) {
+			alert("Please enter Numberic value only");
+			$("#txtTran").val("");
+			tran = 0;
+		}
+		if (isNaN(eother)) {
+			alert("Please enter Numberic value only");
+			$("#txtEOther").val("");
+			eother = 0;
+		}
+		
+		//Income Section
+		var witotal = getWeekValue(wage,wageMode)+getWeekValue(support,supportMode)+getWeekValue(scho,schoMode)+getWeekValue(iother,iotherMode);
+		var fitotal = getFortValue(wage,wageMode)+getFortValue(support,supportMode)+getFortValue(scho,schoMode)+getFortValue(iother,iotherMode);
+		var mitotal = getMonthValue(wage,wageMode)+getMonthValue(support,supportMode)+getMonthValue(scho,schoMode)+getMonthValue(iother,iotherMode);
+	
+		if (isNaN(witotal) || isNaN(fitotal) || isNaN(mitotal) || witotal == "" || fitotal == "" || mitotal == "") {
+			$("#iweek").text("0.00");
+			$("#ifort").text("0.00");
+			$("#imonth").text("0.00");
+		} else {
+			$("#iweek").text(formatNumber((parseFloat(witotal)).toFixed(2)));
+			$("#ifort").text(formatNumber((parseFloat(fitotal)).toFixed(2)));
+			$("#imonth").text(formatNumber((parseFloat(mitotal)).toFixed(2)));
+		}
+		
+		//Expense Section
+		var wetotal = getWeekValue(acc,accMode)+getWeekValue(gro,groMode)+getWeekValue(tran,tranMode)+getWeekValue(eother,eotherMode);
+		var fetotal = getFortValue(acc,accMode)+getFortValue(gro,groMode)+getFortValue(tran,tranMode)+getFortValue(eother,eotherMode);
+		var metotal = getMonthValue(acc,accMode)+getMonthValue(gro,groMode)+getMonthValue(tran,tranMode)+getMonthValue(eother,eotherMode);
+	
+		if (isNaN(wetotal) || isNaN(fetotal) || isNaN(metotal) || wetotal == "" || fetotal == "" || metotal == "") {
+			$("#eweek").text("0.00");
+			$("#efort").text("0.00");
+			$("#emonth").text("0.00");
+		} else {
+			$("#eweek").text(formatNumber((parseFloat(wetotal)).toFixed(2)));
+			$("#efort").text(formatNumber((parseFloat(fetotal)).toFixed(2)));
+			$("#emonth").text(formatNumber((parseFloat(metotal)).toFixed(2)));
+		}
+		
+		//Balance Section
+		var wbalance = witotal-wetotal;
+		var fbalance = fitotal-fetotal;
+		var mbalance = mitotal-metotal;
+		$("#bweek").text(formatNumber((parseFloat(wbalance)).toFixed(2)));
+		$("#bfort").text(formatNumber((parseFloat(fbalance)).toFixed(2)));
+		$("#bmonth").text(formatNumber((parseFloat(mbalance)).toFixed(2)));
+		
+		if (wbalance < 0 || fbalance < 0 || mbalance < 0) {
+			$("#status").text("Your Financial Status is Poor and at Risk!");
+		} else if (wage == "" &  support == "" & scho == "" &iother == "" & acc == "" & gro == "" & tran == "" & eother == "") {
+			$("#status").text("");
+		} else {
+			$("#status").text("Your Financial Status is Good Enough");
+		}
+	
+	}
+	
+	function getWeekValue(value, mode) {
+	
+		if (mode == "week") {
+			return value;
+		} else if (mode == "fortnight") {
+			return value/2;
+		} else if (mode == "month") {
+			return (value/30)*7;
+		}
+	
+	}
+	
+	function getFortValue(value, mode) {
+	
+		if (mode == "week") {
+			return value*2;
+		} else if (mode == "fortnight") {
+			return value;
+		} else if (mode == "month") {
+			return (value/30)*14;
+		}
+	
+	}
+	
+	function getMonthValue(value, mode) {
+	
+		if (mode == "week") {
+			return (value/7)*30;
+		} else if (mode == "fortnight") {
+			return (value/14)*30;
+		} else if (mode == "month") {
+			return  value;
+		}
+	
+	}
+	
+	
+</script>
+</script>
+<!--JavaScript for General Fee Calculator-->
+<script type="text/javascript">
+	$(document).ready(function() {
+	
+		$.ajax({
+			type: "GET",
+			url: "domestic.xml",
+			dataType: "xml",
+			success: getDomestic2 
+		});
+	
+		//Type Student Selected
+		$("#studentTypeDDL").change(function() {
+		
+			var value = $("select#studentTypeDDL option:selected").text();
+			if (value == "Domestic Student") {
+			
+				$("#courseTypeDDL").empty();
+				$.ajax({
+					type: "GET",
+					url: "domestic.xml",
+					dataType: "xml",
+					success: getDomestic2 
+				});
+			
+			}
+			if (value == "International Student") {
+			
+				$("#courseTypeDDL").empty();
+				$.ajax({
+					type: "GET",
+					url: "international.xml",
+					dataType: "xml",
+					success: getInternational2
+				});
+			
+			}
+			$("#periodTypeDDL").attr('selectedIndex', 0);
+		
+		});
+		
+		//Course Selected
+		$("#courseTypeDDL").change(function() {
+		
+			getDetails();
+		
+		});
+	
+	});
+	
+	function getDetails(xml) {
+	
+		var type = $("#studentTypeDDL :selected").text();
+		var xmlF, spTag;
+		if (type == "Domestic Student") {
+			xmlF = "domestic.xml";
+		} else if (type == "International Student") {
+			xmlF = "international.xml";
+		}
+		
+		var course = $("#courseTypeDDL :selected").text();
+		var sp = $("#periodTypeDDL option:selected").val();
+		
+		$("#courseChosen").text(course);
+		$("#courseDuration").text($("#periodTypeDDL option:selected").text());
+		
+		$.ajax({
+			type: "GET",
+			url: xmlF,
+			dataType: "xml",
+			success: function(xml) {
+			
+				if (sp == 2015) {
+					spTag = "fee15"
+				} else if (sp == 2016) {
+					spTag = "fee16"
+				}
+				
+				$(xml).find("course").each(function() {
+				
+					if ($(this).find("program").text() == course) {
+					
+						$("#FPS").text(formatNumber($(this).find(spTag).text()));
+						$("#FPS").val($(this).find(spTag).text());
+						getFTBP();
+					
+					}
+				
+				});
+			
+			} 
+		});
+	
+	}
+	
+	function getDomestic2(xml) {
+								
+		$("#courseTypeDDL").append('<option id="postgraduate" disabled>- Postgraduate -</option>');
+		$("#courseTypeDDL").append('<option id="jmaster" disabled>- Joint Master -</option>');
+	
+		$(xml).find("course").each(function() {
+			
+			if ($(this).find("type").text() == "Postgraduate") {
+			
+				$("#courseTypeDDL option#postgraduate").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			} else if ($(this).find("type").text() == "Joint Master") {
+			
+				$("#courseTypeDDL option#jmaster").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			}
+		
+		});
+			
+		$("#courseTypeDDL").attr('selectedIndex', 1);
+		$("#typeStudent").text("Domestic Student");
+		getFPS();
+	
+	}
+	
+	function getInternational2(xml) {
+	
+		$("#courseTypeDDL").append('<option id="diploma" disabled>- Diploma -</option>');
+		$("#courseTypeDDL").append('<option id="undergraduate" disabled>- Undergraduate -</option>');
+		$("#courseTypeDDL").append('<option id="postgraduate" disabled>- Postgraduate -</option>');
+		$("#courseTypeDDL").append('<option id="jmaster" disabled>- Joint Master -</option>');
+	
+		$(xml).find("course").each(function() {
+			
+			if ($(this).find("type").text() == "Postgraduate") {
+			
+				$("#courseTypeDDL option#postgraduate").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			} else if ($(this).find("type").text() == "Joint Master") {
+			
+				$("#courseTypeDDL option#jmaster").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			} else if ($(this).find("type").text() == "Diploma") {
+			
+				$("#courseTypeDDL option#diploma").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			} else if ($(this).find("type").text() == "Undergraduate") {
+			
+				$("#courseTypeDDL option#undergraduate").after('<option>'+$(this).find("program").text()+'</option>');
+			
+			}
+		
+		});
+			
+		$("#courseTypeDDL").attr('selectedIndex', 1);
+		$("#typeStudent").text("International Student");
+		getFPS();
+	
+	}
+	
+	
+</script>
 <!--script type="text/javascript">
 	$(document).ready(function() {
 			
@@ -568,14 +928,148 @@
 	<!----------------------Start of Fee Calculator Content----------------------------------------------------------------------------------------->
 		<div id="calculator">
 			<ul>
-				<li><a href="javascript:void(0);" name="GFCal" title="General Fee Calculator">GENERAL FEE</a></li>
-				<li><a href="javascript:void(0);" name="SSCal" title="Split Saving Calculator" class="selected">SPLIT SAVING</a></li>
+				<li><a href="javascript:void(0);" name="GFCal" title="General Fee Calculator" class="selected">GENERAL FEE</a></li>
+				<li><a href="javascript:void(0);" name="SSCal" title="Split Saving Calculator">SPLIT SAVING</a></li>
 				<li><a href="javascript:void(0);" name="IECal" title="Income-Expense Calculator">INCOME & EXPENSE</a></li>
 			</ul>
-			<div id="GFCal">
-				General Fee Calculator
+			<div id="GFCal" class="showCal" align="center">
+				<table id="GFCal" style="border:0px solid black;" width="650">
+					<tr>
+						<td width="250">Type of Student
+						</td>
+						<td colspan="2">
+							<select id="studentTypeDDL">
+								<option>Domestic Student</option>
+								<option>International Student</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Course
+						</td>
+						<td colspan="2">
+							<select id="courseTypeDDL" style="width:370px; height:20px;">
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Study Period
+						</td>
+						<td colspan="2">
+							<select id="periodTypeDDL">
+								<option value="2015">SP22 July 2015</option>
+								<option value="2015">SP23 November 2015</option>
+								<option value="2016">SP21 March 2016</option>
+								<option value="2016">SP22 July 2016</option>
+								<option value="2016">SP23 November 2016</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<div id="courseResult" style="border:1px solid red; width:620px; height:600px; display:block; margin:0px;">
+								<table style="border:0px solid black;" width="580px">
+									<tr>
+										<td align="center" colspan="3">
+											<span id="typeStudent" style="font-weight:bold;"></span>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3">
+											<span id="courseChosen" style="font-weight:bold;"></span>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3" style="font-size:1.0em;">
+											Intake of <span id="courseDuration" style="font-weight:bold;"></span>
+											<table width="350px" style=" margin-left:100px; font-size:77%;"><tr width="70%"><td>
+											Commencement Date</td><td>
+											<span id="comDate"></span>
+											</td></tr><tr><td>
+											Expected End Date</td><td>
+											<span id="expectDate"></span>
+											</td></tr></table>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<table style="font-size:60%; border:0px solid black;" width="540px">
+												<tr>
+													<td>Standard Trimester
+													</td>
+													<td align="right"></td>
+													<td align="right"><span id="stri"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Number of Subjects
+													</td>
+													<td align="right">$</td>
+													<td align="right"><span id="numSubject"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Fee per Subject
+													</td>
+													<td align="right">$</td>
+													<td align="right"><span id="subjectFee"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Total Course Fee
+													</td>
+													<td align="right">$</td>
+													<td align="right"><span id="totalFee"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Student Service & Amenities Fee (SSA)
+													</td>
+													<td align="right">$</td>
+													<td align="right"><span id="SSAF"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Oversea Student Health Cover (OSHC)
+													</td>
+													<td align="right">$</td>
+													<td align="right"><span id="OSHC"></span>
+													</td>
+												</tr>
+												<tr>
+													<td>Total Fee Payable
+													</td>
+													<td align="right">$</td>
+													<td align="right"><span id="payableFee"></span>
+													</td>
+												</tr>
+											</table>
+										</td>
+									<tr>
+										<td>
+										</td>
+									</tr>
+									<tr>
+										<td>
+										</td>
+									</tr>
+									<tr>
+										<td>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+						</td>
+						<td colspan="2">
+						</td>
+					</tr>
+				</table>
 			</div>
-			<div id="SSCal" class="showCal" align="center">
+			<div id="SSCal" align="center">
 				<table id="SSCal" style="border:0px solid black;" width="650">
 					<tr>
 						<td width="250">Type of Student
@@ -632,7 +1126,7 @@
 						<td>
 							<select id="pType">
 								<option value="week">Weekly</option>
-								<option value="fornight">Fortnightly</option>
+								<option value="fortnight">Fortnightly</option>
 								<option value="month">Monthly</option>
 							</select>
 						</td>
@@ -739,7 +1233,211 @@
 				</table>
 			</div>
 			<div id="IECal">
-				Income & Expense Calculator
+				<table id="IECal" style="border:0px solid black;" width="650">
+					<tr>
+						<td colspan="3">
+							<span style="font-size:120%; font-weight:bold;">Incomes</span>
+						</td>
+					</tr>
+					<tr>
+						<td width="250">Salary or Wages
+						</td>
+						<td>$ <input type="text" id="txtWage" style="width:100px;"></input>
+						</td>
+						<td>
+							<select id="WageMode">
+								<option value="week">Weekly</option>
+								<option value="fortnight">Fortnightly</option>
+								<option value="month">Monthly</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Family Support
+						</td>
+						<td>$ <input type="text" id="txtSupport" style="width:100px;"></input>
+						</td>
+						<td>
+							<select id="SupportMode">
+								<option value="week">Weekly</option>
+								<option value="fortnight">Fortnightly</option>
+								<option value="month">Monthly</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Scholarship
+						</td>
+						<td>$ <input type="text" id="txtScho" style="width:100px;"></input>
+						</td>
+						<td>
+							<select id="SchoMode">
+								<option value="week">Weekly</option>
+								<option value="fortnight">Fortnightly</option>
+								<option value="month">Monthly</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Other Incomes
+						</td>
+						<td>$ <input type="text" id="txtIOther" style="width:100px;"></input>
+						</td>
+						<td>
+							<select id="IOtherMode">
+								<option value="week">Weekly</option>
+								<option value="fortnight">Fortnightly</option>
+								<option value="month">Monthly</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<table style="border:0px solid black; margin-left:0px; font-size:75%;" width="640px">
+								<tr>
+									<td width="200px">
+									</td>
+									<td width="200px" align="center">Weekly
+									</td>
+									<td width="200px" align="center">Fortnightly
+									</td>
+									<td width="200px" align="center">Monthly
+									</td>
+								</tr>
+								<tr>
+									<td>Total Incomes ($)
+									</td>
+									<td align="center">
+										<span id="iweek">0.00</span>
+									</td>
+									<td align="center">
+										<span id="ifort">0.00</span>
+									</td>
+									<td align="center">
+										<span id="imonth">0.00</span>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3"><hr style="margin-left:180px;" width="440px"></td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<span style="font-size:120%; font-weight:bold;">Expenses</span>
+						</td>
+					</tr>
+					<tr>
+						<td>Accommodation
+						</td>
+						<td>$ <input type="text" id="txtAcc" style="width:100px;"></input>
+						</td>
+						<td>
+							<select id="AccMode">
+								<option value="week">Weekly</option>
+								<option value="fortnight">Fortnightly</option>
+								<option value="month">Monthly</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Groceries
+						</td>
+						<td>$ <input type="text" id="txtGro" style="width:100px;"></input>
+						</td>
+						<td>
+							<select id="GroMode">
+								<option value="week">Weekly</option>
+								<option value="fortnight">Fortnightly</option>
+								<option value="month">Monthly</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Transport
+						</td>
+						<td>$ <input type="text" id="txtTran" style="width:100px;"></input>
+						</td>
+						<td>
+							<select id="TranMode">
+								<option value="week">Weekly</option>
+								<option value="fortnight">Fortnightly</option>
+								<option value="month">Monthly</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Other Expenses
+						</td>
+						<td>$ <input type="text" id="txtEOther" style="width:100px;"></input>
+						</td>
+						<td>
+							<select id="EOtherMode">
+								<option value="week">Weekly</option>
+								<option value="fortnight">Fortnightly</option>
+								<option value="month">Monthly</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<table style="border:0px solid black; margin-left:0px; font-size:75%;" width="640px">
+								<tr>
+									<td width="200px">
+									</td>
+									<td width="200px" align="center">Weekly
+									</td>
+									<td width="200px" align="center">Fortnightly
+									</td>
+									<td width="200px" align="center">Monthly
+									</td>
+								</tr>
+								<tr>
+									<td>Total Expenses ($)
+									</td>
+									<td align="center">
+										<span id="eweek">0.00</span>
+									</td>
+									<td align="center">
+										<span id="efort">0.00</span>
+									</td>
+									<td align="center">
+										<span id="emonth">0.00</span>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3"><hr style="margin-left:180px;" width="440px"></td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<table style="border:0px solid black; margin-left:0px; font-size:75%;" width="640px">
+								<tr>
+									<td width="200px">
+										<span style="font-weight:bold;">Balance ($)</span>
+									</td>
+									<td width="200px" align="center">
+										<span id="bweek" style="font-weight:bold;">0.00</span>
+									</td>
+									<td width="200px" align="center">
+										<span id="bfort" style="font-weight:bold;">0.00</span>
+									</td>
+									<td width="200px" align="center">
+										<span id="bmonth" style="font-weight:bold;">0.00</span>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3" align="center">
+							<span id="status" style="font-size:200%; font-weight:bold;"></span>
+						</td>
+					</tr>
+				</table>
 			</div>
 		</div>		
 	<!---------------------------------------------------------------------------------------------------------------------------------------------->
