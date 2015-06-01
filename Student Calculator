@@ -712,8 +712,112 @@
 			getDetails();
 		
 		});
+		
+		//Study Period Selected
+		$("#periodTypeDDL").change(function() {
+			
+			getDetails();
+		
+		});
+		
 	
 	});
+	
+	function getCourseRange(start, trimester) {
+			
+		if (start == "SP22 July 2015") {
+			$("#comDate").text("20 July 2015");
+			if (trimester == 3) {
+				$("#expectDate").text("24 June 2016");
+				var oshc = 600;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			} else if (trimester == 6) {
+				$("#expectDate").text("23 June 2017");
+				var oshc = 1169;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			} else if (trimester == 8) {
+				$("#expectDate").text("23 February 2018");
+				var oshc = 1580;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			}
+		} else if (start == "SP23 November 2015") {
+			$("#comDate").text("16 November 2015");
+			if (trimester == 3) {
+				$("#expectDate").text("14 October 2016");
+				var oshc = 600;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			} else if (trimester == 6) {
+				$("#expectDate").text("20 October 2017");
+				var oshc = 1169;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			} else if (trimester == 8) {
+				$("#expectDate").text("22 June 2018");
+				var oshc = 1580;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			}
+		} else if (start == "SP21 March 2016") {
+			$("#comDate").text("21 March 2016");
+			if (trimester == 3) {
+				$("#expectDate").text("03 March 2017");
+				var oshc = 600;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			} else if (trimester == 6) {
+				$("#expectDate").text("09 March 2018");
+				var oshc = 1169;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			} else if (trimester == 8) {
+				$("#expectDate").text("19 October 2019");
+				var oshc = 1580;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			}
+		} else if (start == "SP22 July 2016") {
+			$("#comDate").text("18 July 2016");
+			if (trimester == 3) {
+				$("#expectDate").text("23 June 2017");
+				var oshc = 600;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			} else if (trimester == 6) {
+				$("#expectDate").text("22 June 2018");
+				var oshc = 1169;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			} else if (trimester == 8) {
+				$("#expectDate").text("01 March 2019");
+				var oshc = 1580;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			}
+		} else if (start == "SP23 November 2016") {
+			$("#comDate").text("21 November 2016");
+			if (trimester == 3) {
+				$("#expectDate").text("20 October 2017");
+				var oshc = 600;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			} else if (trimester == 6) {
+				$("#expectDate").text("19 October 2018");
+				var oshc = 1169;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			} else if (trimester == 8) {
+				$("#expectDate").text("28 June 2019");
+				var oshc = 1580;
+				$("#OSHC").text(formatNumber(oshc.toFixed(2)));
+				$("#OSHC").val(oshc);
+			}
+		}
+	
+	}
 	
 	function getDetails(xml) {
 	
@@ -747,9 +851,24 @@
 				
 					if ($(this).find("program").text() == course) {
 					
-						$("#FPS").text(formatNumber($(this).find(spTag).text()));
-						$("#FPS").val($(this).find(spTag).text());
-						getFTBP();
+						$("#subjectFee").text(formatNumber($(this).find(spTag).text()));
+						$("#subjectFee").val($(this).find(spTag).text());
+						$("#stri").text($(this).find("terms").text());
+						$("#stri").val($(this).find("terms").text());
+						$("#numSubject").text($(this).find("subjects").text());
+						$("#numSubject").val($(this).find("subjects").text());
+						var fee = $(this).find(spTag).text();
+						var nos = $(this).find("subjects").text();
+						var ntri = $(this).find("terms").text();
+						var total = fee*nos;
+						$("#totalFee").text(formatNumber(total.toFixed(2)));
+						var ssa = nos*42.90;
+						$("#SSAF").text(formatNumber(ssa.toFixed(2)));
+						var sp = $("#periodTypeDDL :selected").text();
+						getCourseRange(sp,ntri);
+						var oshc = $("#OSHC").val();
+						var nett = parseFloat(total)+parseFloat(ssa)+parseFloat(oshc);
+						$("#payableFee").text(formatNumber(nett.toFixed(2)));
 					
 					}
 				
@@ -781,7 +900,7 @@
 			
 		$("#courseTypeDDL").attr('selectedIndex', 1);
 		$("#typeStudent").text("Domestic Student");
-		getFPS();
+		getDetails();
 	
 	}
 	
@@ -816,7 +935,7 @@
 			
 		$("#courseTypeDDL").attr('selectedIndex', 1);
 		$("#typeStudent").text("International Student");
-		getFPS();
+		getDetails();
 	
 	}
 	
@@ -953,7 +1072,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>Study Period
+						<td>Study Intake
 						</td>
 						<td colspan="2">
 							<select id="periodTypeDDL">
@@ -967,7 +1086,7 @@
 					</tr>
 					<tr>
 						<td colspan="3">
-							<div id="courseResult" style="border:1px solid red; width:620px; height:600px; display:block; margin:0px;">
+							<div id="courseResult" style="border:1px solid orange; width:620px; height:auto; display:block; margin:0px;">
 								<table style="border:0px solid black;" width="580px">
 									<tr>
 										<td align="center" colspan="3">
@@ -995,18 +1114,17 @@
 										<td>
 											<table style="font-size:60%; border:0px solid black;" width="540px">
 												<tr>
-													<td>Standard Trimester
+													<td width="300px">Standard Trimester
 													</td>
-													<td align="right"></td>
 													<td align="right"><span id="stri"></span>
 													</td>
+													<td align="right" width="100px">Trimesters</td>
 												</tr>
 												<tr>
 													<td>Number of Subjects
 													</td>
-													<td align="right">$</td>
-													<td align="right"><span id="numSubject"></span>
-													</td>
+													<td align="right"><span id="numSubject"></span></td>
+													<td align="right">Subjects</td>
 												</tr>
 												<tr>
 													<td>Fee per Subject
@@ -1045,14 +1163,6 @@
 												</tr>
 											</table>
 										</td>
-									<tr>
-										<td>
-										</td>
-									</tr>
-									<tr>
-										<td>
-										</td>
-									</tr>
 									<tr>
 										<td>
 										</td>
@@ -1216,6 +1326,9 @@
 													<td align="right" colspan="2">
 														<span id="nop"></span>
 													</td>
+												</tr>
+												<tr>
+													<td></td>
 												</tr>
 											</table>
 										</td>
